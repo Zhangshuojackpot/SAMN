@@ -8,3 +8,55 @@ Rescaling Approach For Long-Tailed Recognition](https://openaccess.thecvf.com/co
 ### Abstract
 Long-tailed recognition poses a significant challenge for deep learning. The two-stage decoupling paradigm, which separates representation learning from classifier retraining, offers a promising solution. During the classifier retraining stage, adaptive norm rescaling is a popular technique. It adjusts the per-class weight norms via parameter regularization, which inevitably introduces hyperparameters. However, many studies report that long-tailed recognition is sensitive to these hyperparameters, as their setup significantly impacts performance. In this paper, we first provide a class-conditional distribution perspective to support norm rescaling methods. Furthermore, we propose a simple but effective approach called Self-Adaptive Monotonic Normalization (SAMN). SAMN avoids the need for parameter regularization. It directly enforces monotonicity on per-class weight norms using the Pool Adjacent Violators Algorithm, making the method hyperparameter-friendly. SAMN is a universal strategy that integrates seamlessly with other methods for enhanced performance. Experiments on benchmark datasets demonstrate that our method significantly boosts long-tailed recognition performance, often achieving state-of-the-art results.
 
+### Preparation
+The experimental environment is in [requirements.txt](https://github.com/Zhangshuojackpot/HMW/blob/main/requirements.txt).<br>
+
+### Usage
+Run [train_main.py](https://github.com/Zhangshuojackpot/HMW/blob/main/HMW_upload/train_main.py) to obtain the results. For example, if you want to obtain the result of the HMW+CCE under the noise rate of 0.2 of the symmetric noise on CIFAR10, you can type:<br>
+```
+python train_main.py --if_aum 1 --if_anneal 1 --if_spherical 1 --seed 123 --dataset 'cifar10' --num_class 10 --data_path './data/cifar10' --noise_mode 'sym' --num_epochs 250 --milestones '125/200' --r 0.2 --method 'hmw+cce' --alpha_nmw 100 --beta_nmw 100 --top_rate_nmw 0.01 --check_loc './checkpoint_cifar10_cce_final_sym_hmw/'
+
+```
+If you want to use only the proposed hyperspherical TKUM metric for weighting, you can type:<br>
+```
+python train_main.py --if_aum 0 --if_anneal 1 --if_spherical 1 --seed 123 --dataset 'cifar10' --num_class 10 --data_path './data/cifar10' --noise_mode 'sym' --num_epochs 250 --milestones '125/200' --r 0.2 --method 'hmw+cce' --alpha_nmw 100 --beta_nmw 100 --top_rate_nmw 0.01 --check_loc './checkpoint_cifar10_cce_final_sym_hmw/'
+
+```
+
+If you want to obtain the result of the HMW+CCE under the noise rate of 0.2 of the symmetric noise on CIFAR100, you can type:<br>
+```
+python train_main.py --if_aum 1 --if_anneal 1 --if_spherical 1 --seed 123 --dataset 'cifar100' --num_class 100 --data_path './data/cifar100' --noise_mode 'sym' --num_epochs 250 --milestones '125/200' --r 0.2 --method 'hmw+cce' --alpha_nmw 100 --beta_nmw 100 --top_rate_nmw 0.01 --check_loc './checkpoint_cifar100_cce_final_sym_hmw/'
+
+```
+If you want to use only the proposed hyperspherical TKUM metric for weighting, you can type:<br>
+```
+python train_main.py --if_aum 0 --if_anneal 1 --if_spherical 1 --seed 123 --dataset 'cifar100' --num_class 100 --data_path './data/cifar100' --noise_mode 'sym' --num_epochs 250 --milestones '125/200' --r 0.2 --method 'hmw+cce' --alpha_nmw 100 --beta_nmw 100 --top_rate_nmw 0.01 --check_loc './checkpoint_cifar100_cce_final_sym_hmw/'
+
+```
+
+### Citation
+If you think this repo is useful in your research, please consider citing our paper.
+```
+@article{Zhang_Li_Wang_Li_Liu_2024, 
+title={Learning with Noisy Labels Using Hyperspherical Margin Weighting}, 
+volume={38},
+url={https://ojs.aaai.org/index.php/AAAI/article/view/29626}, 
+DOI={10.1609/aaai.v38i15.29626}, 
+author={Zhang, Shuo and Li, Yuwen and Wang, Zhongyu and Li, Jianqing and Liu, Chengyu}, 
+year={2024}, 
+month={Mar.}, 
+pages={16848-16856} 
+}
+```
+
+Meanwhile, our implementation uses parts of some public codes in [UniCon: Combating Label Noise Through Uniform Selection and Contrastive Learning](https://openaccess.thecvf.com/content/CVPR2022/html/Karim_UniCon_Combating_Label_Noise_Through_Uniform_Selection_and_Contrastive_Learning_CVPR_2022_paper.html). Please consider citing this paper.
+```
+@InProceedings{Karim_2022_CVPR,
+    author    = {Karim, Nazmul and Rizve, Mamshad Nayeem and Rahnavard, Nazanin and Mian, Ajmal and Shah, Mubarak},
+    title     = {UniCon: Combating Label Noise Through Uniform Selection and Contrastive Learning},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2022},
+    pages     = {9676-9686}
+}
+```
