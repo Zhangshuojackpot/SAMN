@@ -1,8 +1,9 @@
 # Self-Adaptive Monotonic Normalization (SAMN)
 This is the official PyTorch implementation of our work [Why Not Hyperparameter-Friendly Optimisation? A Monotonic Adaptive Norm
 Rescaling Approach For Long-Tailed Recognition](https://openaccess.thecvf.com/content/CVPR2026/html/Zhang_Why_Not_Hyperparameter-Friendly_Optimisation_A_Monotonic_Adaptive_Norm_Rescaling_Approach_CVPR_2026_paper.html), which has been published in AAAI-24. This repo contains some key codes of our HMW and its application in CIFAR10/CIFAR100 dataset.<br>
+
 <div align=center>
-<img width="800" src="https://github.com/Zhangshuojackpot/HMW/blob/main/4766.png"/>
+<img width="800" src="https://github.com/Zhangshuojackpot/SAMN/blob/main/poster.png"/>
 </div>
 
 ### Abstract
