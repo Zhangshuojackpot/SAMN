@@ -108,4 +108,11 @@ Stage 2 fine-tunes only the classifier head for 20 epochs with the backbone froz
 
 ## Acknowledgements
 
-This codebase builds on [GLMC (CVPR 2023)](https://github.com/dorishuml/GLMC). The SLAS loss (`mislas.py`) is from [MiSLAS (CVPR 2021)](https://github.com/dvlab-research/MiSLAS).
+Please consider citing GLMC and MiSLAS in your publications if it helps your research. :)
+
+@inproceedings{zhong2021mislas,
+    title={Improving Calibration for Long-Tailed Recognition},
+    author={Zhisheng Zhong, Jiequan Cui, Shu Liu, and Jiaya Jia},
+    booktitle={IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+    year={2021},
+}
