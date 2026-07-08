@@ -110,6 +110,15 @@ Stage 2 fine-tunes only the classifier head for 20 epochs with the backbone froz
 
 Please consider citing GLMC and MiSLAS in your publications if it helps your research. :)
 
+@inproceedings{
+du2023global,
+title={Global and Local Mixture Consistency Cumulative Learning for Long-tailed Visual Recognitions},
+author={Fei Du, Peng Yang, Qi Jia, Fengtao Nan, Xiaoting Chen, Yun Yang},
+booktitle={Conference on Computer Vision and Pattern Recognition 2023},
+year={2023},
+url={https://arxiv.org/abs/2305.08661}
+}
+
 @inproceedings{zhong2021mislas,
     title={Improving Calibration for Long-Tailed Recognition},
     author={Zhisheng Zhong, Jiequan Cui, Shu Liu, and Jiaya Jia},
