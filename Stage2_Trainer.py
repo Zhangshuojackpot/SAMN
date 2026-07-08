@@ -160,11 +160,7 @@ class Trainer(object):
             p_losses.append(a_loss)
             acc1, av_loss = self.validate(epoch=epoch)
             pv_losses.append(av_loss)
-            if self.args.dataset == 'ImageNet-LT' or self.args.dataset == 'iNaturelist2018':
-                # self.paco_adjust_learning_rate(self.optimizer, epoch, self.args)
-                self.train_scheduler.step()
-            else:
-                self.train_scheduler.step()
+            self.train_scheduler.step()
             # remember best acc@1 and save checkpoint
             is_best = acc1 > best_acc1
             best_acc1 = max(acc1,  best_acc1)

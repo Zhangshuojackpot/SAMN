@@ -10,14 +10,13 @@ from torch.backends import cudnn
 from utils import util
 from utils.util import *
 from model import ResNet_cifar
-from model import Resnet_LT
-from imbalance_data import cifar10Imbanlance,cifar100Imbanlance,dataset_lt_data
+from imbalance_data import cifar10Imbanlance,cifar100Imbanlance
 import logging
 from Trainer import Trainer
 
 # train set
 parser = argparse.ArgumentParser(description="SAMN")
-parser.add_argument('--dataset', type=str, default='cifar10', help="cifar10,cifar100,ImageNet-LT,iNaturelist2018")
+parser.add_argument('--dataset', type=str, default='cifar10', help="cifar10, cifar100")
 parser.add_argument('--root', type=str, default='./data/', help="dataset setting")
 parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet32',
                     choices=('resnet18', 'resnet32', 'resnet34', 'resnet50', 'resnext50_32x4d'))
@@ -49,31 +48,21 @@ parser.add_argument('--root_log', type=str, default='SAMN-CVPR2026/output/')
 parser.add_argument('--root_model', type=str, default='SAMN-CVPR2026/output/')
 parser.add_argument('--store_name', type=str, default='SAMN-CVPR2026/output/')
 
-parser.add_argument('--imagenet_traintxt', default='./data/data_txt/ImageNet_LT_train.txt', type=str, metavar='PATH',
-                    help='path to latest checkpoint (default: none)')
-parser.add_argument('--imagenet_testtxt', default='./data/data_txt/ImageNet_LT_test.txt', type=str, metavar='PATH',
-                    help='path to latest checkpoint (default: none)')
-
 
 best_acc1 = 0
 
 
 def get_model(args):
-    if args.dataset == "ImageNet-LT" or args.dataset == "iNaturelist2018":
-        print("=> creating model '{}'".format('resnext50_32x4d'))
-        net = Resnet_LT.resnext50_32x4d(args=args, num_classes=args.num_classes)
-        return net
-    else:
-        print("=> creating model '{}'".format(args.arch))
-        if args.arch == 'resnet50':
-            net = ResNet_cifar.resnet50(args=args, num_class=args.num_classes)
-        elif args.arch == 'resnet18':
-            net = ResNet_cifar.resnet18(args=args, num_class=args.num_classes)
-        elif args.arch == 'resnet32':
-            net = ResNet_cifar.resnet32(args=args, num_class=args.num_classes)
-        elif args.arch == 'resnet34':
-            net = ResNet_cifar.resnet34(args=args, num_class=args.num_classes)
-        return net
+    print("=> creating model '{}'".format(args.arch))
+    if args.arch == 'resnet50':
+        net = ResNet_cifar.resnet50(args=args, num_class=args.num_classes)
+    elif args.arch == 'resnet18':
+        net = ResNet_cifar.resnet18(args=args, num_class=args.num_classes)
+    elif args.arch == 'resnet32':
+        net = ResNet_cifar.resnet32(args=args, num_class=args.num_classes)
+    elif args.arch == 'resnet34':
+        net = ResNet_cifar.resnet34(args=args, num_class=args.num_classes)
+    return net
 
 def get_dataset(args):
     transform_train,transform_val = util.get_transform(args.dataset)
@@ -87,16 +76,6 @@ def get_dataset(args):
         trainset = cifar100Imbanlance.Cifar100Imbanlance(transform=util.TwoCropTransform(transform_train),imbanlance_rate=args.imbanlance_rate, train=True,file_path=os.path.join(args.root,'cifar-100-python/'))
         testset = cifar100Imbanlance.Cifar100Imbanlance(imbanlance_rate=args.imbanlance_rate, train=False, transform=transform_val,file_path=os.path.join(args.root,'cifar-100-python/'))
         print("load cifar100")
-        return trainset,testset
-
-    if args.dataset == 'ImageNet-LT':
-        trainset = dataset_lt_data.LT_Dataset(args.root, args.imagenet_traintxt,util.TwoCropTransform(transform_train))
-        testset = dataset_lt_data.LT_Dataset(args.root, args.imagenet_testtxt,transform_val)
-        return trainset,testset
-
-    if args.dataset == 'iNaturelist2018':
-        trainset = dataset_lt_data.LT_Dataset(args.root, args.dir_train_txt,util.TwoCropTransform(transform_train))
-        testset = dataset_lt_data.LT_Dataset(args.root, args.dir_test_txt,transform_val)
         return trainset,testset
 
 def set_seed(seed: int = 42, deterministic: bool = True):

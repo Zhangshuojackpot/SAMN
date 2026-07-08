@@ -145,10 +145,7 @@ class Trainer(object):
             eet = time.time()
             print('epoch time: {:.3f}s'.format(eet - est))
             acc1 = self.validate(epoch=epoch)
-            if self.args.dataset == 'ImageNet-LT' or self.args.dataset == 'iNaturelist2018':
-                self.paco_adjust_learning_rate(self.optimizer, epoch, self.args)
-            else:
-                self.train_scheduler.step()
+            self.train_scheduler.step()
             current_lr = self.optimizer.param_groups[0]['lr']
             print('Current learning rate:', current_lr)
             # remember best acc@1 and save checkpoint
@@ -242,12 +239,3 @@ class Trainer(object):
         else:
             raise Exception
 
-    def paco_adjust_learning_rate(self,optimizer, epoch, args):
-        warmup_epochs = 10
-        lr = self.lr
-        if epoch <= warmup_epochs:
-            lr = self.lr / warmup_epochs * (epoch + 1)
-        else:  # cosine lr schedule
-            lr *= 0.5 * (1. + math.cos(math.pi * (epoch - warmup_epochs + 1) / (self.epochs - warmup_epochs + 1)))
-        for param_group in self.optimizer.param_groups:
-            param_group['lr'] = lr
