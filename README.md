@@ -1,10 +1,11 @@
-# SAMN: Self-Adaptive Monotonic Normalization for Long-Tailed Recognition
+# Hyperspherical-Margin-Weighting (HMW)
+This is the official PyTorch implementation of our work [Why Not Hyperparameter-Friendly Optimisation? A Monotonic Adaptive Norm Rescaling Approach For Long-Tailed Recognition](https://arxiv.org/abs/2606.02526), which has been published in CVPR2026. This repo contains some key code for our SAMN and its application to the CIFAR10/CIFAR100 dataset.<br>
+<div align=center>
+<img width="800" src="https://github.com/Zhangshuojackpot/SAMN/blob/main/poster.png"/>
+</div>
 
-**CVPR 2026**
-
-## Overview
-
-SAMN addresses long-tailed recognition by constraining the classifier head's per-class weight norms to be **monotone non-decreasing** with respect to class frequency. The core insight is that in standard training, tail-class weight norms collapse relative to head classes, degrading minority-class logits. SAMN enforces a monotone ordering via a parallel GPU implementation of the **Pool Adjacent Violators Algorithm (PAVA)**, yielding a drop-in replacement (`PAVALinear`) for the standard linear head.
+### Abstract
+Long-tailed recognition poses a significant challenge for deep learning. The two-stage decoupling paradigm, which separates representation learning from classifier retraining, offers a promising solution. During the classifier retraining stage, adaptive norm rescaling is a popular technique. It adjusts the per-class weight norms via parameter regularization, which inevitably introduces hyperparameters. However, many studies report that long-tailed recognition is sensitive to these hyperparameters, as their setup significantly impacts performance. In this paper, we first provide a class-conditional distribution perspective to support norm rescaling methods. Furthermore, we propose a simple but effective approach called Self-Adaptive Monotonic Normalization (SAMN). SAMN avoids the need for parameter regularization. It directly enforces monotonicity on per-class weight norms using the Pool Adjacent Violators Algorithm, making the method hyperparameter-friendly. SAMN is a universal strategy that integrates seamlessly with other methods for enhanced performance. Experiments on benchmark datasets demonstrate that our method significantly boosts long-tailed recognition performance, often achieving state-of-the-art results.
 
 Training follows a standard **two-stage decoupled** protocol:
 - **Stage 1** (200 epochs): train backbone + standard head jointly
@@ -26,20 +27,6 @@ CUDA 11.8 is recommended (tested with PyTorch 2.4.1+cu118). The PAVA solver uses
 
 ## Data Preparation
 
-### CIFAR-10-LT and CIFAR-100-LT
-
-**CIFAR-10** is downloaded automatically by torchvision on first run.
-
-**CIFAR-100** must be downloaded manually:
-
-```bash
-mkdir -p data
-cd data
-wget https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz
-tar -xzf cifar-100-python.tar.gz
-cd ..
-```
-
 Expected layout after setup:
 
 ```
@@ -58,7 +45,6 @@ data/
 
 ## Training
 
-All experiments use **seed 3407** (set via `--seed 3407`, which is the default).
 
 ### Stage 1 — Backbone Training
 
@@ -70,19 +56,9 @@ bash launch_stage1_cifar.sh
 
 Checkpoints are saved to `SAMN-CVPR2026/output/<run_name>/ckpt.best.pth.tar`.
 
-**Stage 1 hyperparameters (fixed across all CIFAR runs):**
-
-| Parameter | Value |
-|---|---|
-| Architecture | ResNet-32 |
-| Epochs | 200 |
-| Batch size | 64 |
-| Learning rate | 0.01 |
-| Weight decay | 5e-3 |
-| Seed | 3407 |
-
-`--use_glmc 1.` enables the dual-DataLoader + MixUp/CutMix + contrastive loss (GLMC backbone).  
+`--use_glmc 1.` enables the GLMC.  
 `--use_glmc 0.` trains with standard cross-entropy (CE backbone).
+
 
 ### Stage 2 — Classifier Head Fine-tuning
 
@@ -94,24 +70,6 @@ bash launch_stage2_cifar.sh
 
 Stage 2 fine-tunes only the classifier head for 20 epochs with the backbone frozen. Results (best epoch accuracy) are saved in `SAMN-CVPR2026/fineoutput/<run_name>/ckpt.best.pth.tar`.
 
-**Key Stage 2 flags:**
-
-| Flag | Value | Meaning |
-|---|---|---|
-| `--use_samn 1` | SAMN | `PAVALinear` head (monotone norms) |
-| `--use_samn 0` | Baseline | Standard `nn.Linear` head |
-| `--methods CE` | CE loss | Cross-entropy on PAVALinear |
-| `--methods MISLAS` | SLAS loss | Label-Aware Smoothing |
-| `--methods GLMC` | GLMC loss | Weighted sampling + low LR |
-
-**Method-to-paper-name mapping:**
-
-| Script flags | Paper name |
-|---|---|
-| `--methods MISLAS --use_samn 0` | SLAS (baseline) |
-| `--methods CE --use_samn 1` | CE + SAMN |
-| `--methods MISLAS --use_samn 1` | SLAS + SAMN |
-| `--methods GLMC --use_samn 1` | GLMC + SAMN |
 
 ## Code Structure
 
@@ -131,18 +89,13 @@ Stage 2 fine-tunes only the classifier head for 20 epochs with the backbone froz
 │   └── Resnet_LT.py               # ResNeXt-50 backbone (ImageNet-LT / iNaturalist)
 ├── imbalance_data/
 │   ├── cifar10Imbanlance.py       # CIFAR-10-LT dataset with exponential imbalance
-│   ├── cifar100Imbanlance.py      # CIFAR-100-LT dataset with exponential imbalance
-│   └── dataset_lt_data.py         # ImageNet-LT / iNaturalist loader
-├── utils/
-│   ├── util.py                    # Data transforms, AverageMeter, checkpoint I/O
-│   ├── moco_loader.py             # MoCo-style augmentation
-│   └── randaugment.py             # RandAugment
-└── data/
-    └── data_txt/
-        ├── ImageNet_LT_train.txt  # ImageNet-LT split (from original dataset)
-        ├── ImageNet_LT_test.txt
-        ├── iNaturalist18_train.txt
-        └── iNaturalist18_val.txt
+│   └── cifar100Imbanlance.py      # CIFAR-100-LT dataset with exponential imbalance
+│  
+└── utils/
+    ├── util.py                    # Data transforms, AverageMeter, checkpoint I/O
+    ├── moco_loader.py             # MoCo-style augmentation
+    └── randaugment.py             # RandAugment
+
 ```
 
 ### Key files
