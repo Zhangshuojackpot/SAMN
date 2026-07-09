@@ -1,5 +1,5 @@
 # Hyperspherical-Margin-Weighting (HMW)
-This is the official PyTorch implementation of our work [Why Not Hyperparameter-Friendly Optimisation? A Monotonic Adaptive Norm Rescaling Approach For Long-Tailed Recognition](https://arxiv.org/abs/2606.02526), which has been published in CVPR2026. This repo contains some key code for our SAMN and its application to the CIFAR10/CIFAR100 dataset.<br>
+This is the official PyTorch implementation of our work [Why Not Hyperparameter-Friendly Optimisation? A Monotonic Adaptive Norm Rescaling Approach For Long-Tailed Recognition](https://openaccess.thecvf.com/content/CVPR2026/html/Zhang_Why_Not_Hyperparameter-Friendly_Optimisation_A_Monotonic_Adaptive_Norm_Rescaling_Approach_CVPR_2026_paper.html), which has been published in CVPR2026. This repo contains some key code for our SAMN and its application to the CIFAR10/CIFAR100 dataset.<br>
 <div align=center>
 <img width="800" src="https://github.com/Zhangshuojackpot/SAMN/blob/main/poster.png"/>
 </div>
