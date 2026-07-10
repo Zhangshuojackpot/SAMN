@@ -108,7 +108,7 @@ Stage 2 fine-tunes only the classifier head for 20 epochs with the backbone froz
 
 ## Acknowledgements
 
-Please consider citing GLMC and MiSLAS in your publications if it helps your research. :)
+Please consider citing GLMC and MiSLAS in your publications if they help your research. :)
 ```
 @inproceedings{
 du2023global,
